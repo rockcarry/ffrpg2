@@ -11,12 +11,14 @@ CCFLAGS = -mwindows -Wall
 OBJS = \
     log.o \
     bmp.o \
-    screen.o
+    screen.o \
+    bitblt.o
 
 # 所有的可执行目标
 EXES = \
     bmp.exe \
-    screen.exe
+    screen.exe \
+    bitblt.exe
 
 # 输出的库文件
 LIB = ffrpg.a

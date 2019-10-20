@@ -1,6 +1,7 @@
 !.gitignore
 *.a
 *.o
+*.db
 *.dll
 *.exe
 
