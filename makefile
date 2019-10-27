@@ -13,6 +13,7 @@ OBJS = \
     bmp.o \
     screen.o \
     draw2d.o \
+    font.o \
     map.o
 
 # 所有的可执行目标
@@ -20,6 +21,7 @@ EXES = \
     bmp.exe \
     screen.exe \
     draw2d.exe \
+    font.exe \
     map.exe
 
 # 输出的库文件
