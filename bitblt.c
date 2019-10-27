@@ -5,10 +5,18 @@
 
 /* 内部函数实现 */
 /* 位块传送的区域裁剪函数 */
-static BOOL bltclip(BMP *dstpb, int *dstx, int *dsty,
-                    BMP *srcpb, int *srcx, int *srcy,
-                    int *w, int *h)
+static BOOL bltclip(BMP *dstpb, int *dstx, int *dsty, RECT *clipper,
+                    BMP *srcpb, int *srcx, int *srcy, int *w, int *h)
 {
+    int dst_clip_l = clipper ? clipper->left  : 0;
+    int dst_clip_t = clipper ? clipper->top   : 0;
+    int dst_clip_r = clipper ? clipper->right : dstpb->width  - 1;
+    int dst_clip_b = clipper ? clipper->bottom: dstpb->height - 1;
+    if (dst_clip_l < 0) dst_clip_l = 0;
+    if (dst_clip_t < 0) dst_clip_t = 0;
+    if (dst_clip_r > dstpb->width ) dst_clip_r = dstpb->width - 1;
+    if (dst_clip_b > dstpb->height) dst_clip_b = dstpb->height- 1;
+
     /* 对源图进行裁剪 */
     if (*srcx >= srcpb->width || *srcy >= srcpb->height) return FALSE;
     if (*srcx < 0) {
@@ -26,32 +34,32 @@ static BOOL bltclip(BMP *dstpb, int *dstx, int *dsty,
     if (*srcy + *h > srcpb->height) *h = srcpb->height - *srcy;
 
     /* 对目的图进行裁剪 */
-    if (*dstx >= dstpb->width || *dsty >= dstpb->height) return FALSE;
-    if (*dstx < 0) {
-        *w    += *dstx;
-        *srcx -= *dstx;
-        *dstx  = 0;
+    if (*dstx > dst_clip_r || *dsty > dst_clip_b) return FALSE;
+    if (*dstx < dst_clip_l) {
+        *w    -= dst_clip_l - *dstx;
+        *srcx += dst_clip_l - *dstx;
+        *dstx  = dst_clip_l;
     }
-    if (*dsty < 0) {
-        *h    += *dsty;
-        *srcy -= *dsty;
-        *dsty  = 0;
+    if (*dsty < dst_clip_t) {
+        *h    -= dst_clip_t - *dsty;
+        *srcy += dst_clip_t - *dsty;
+        *dsty  = dst_clip_t;
     }
 
     if (*w < 0 || *h < 0) return FALSE;
-    if (*dstx + *w > dstpb->width ) *w = dstpb->width  - *dstx;
-    if (*dsty + *h > dstpb->height) *h = dstpb->height - *dsty;
+    if (*dstx + *w > dst_clip_r + 1) *w = dst_clip_r + 1 - *dstx;
+    if (*dsty + *h > dst_clip_b + 1) *h = dst_clip_b + 1 - *dsty;
     return TRUE;
 }
 
 /* 函数实现 */
-void bitblt(BMP *dstpb, int dstx, int dsty, BMP *srcpb, int srcx, int srcy, int srcw, int srch)
+void bitblt(BMP *dstpb, int dstx, int dsty, RECT *clipper, BMP *srcpb, int srcx, int srcy, int srcw, int srch)
 {
     DWORD *dst, *src;
 
     if (srcw == -1) srcw = srcpb->width ;
     if (srch == -1) srch = srcpb->height;
-    if (!bltclip(dstpb, &dstx, &dsty, srcpb, &srcx, &srcy, &srcw, &srch)) return;
+    if (!bltclip(dstpb, &dstx, &dsty, clipper, srcpb, &srcx, &srcy, &srcw, &srch)) return;
     src = srcpb->pdata + srcy * srcpb->width + srcx;
     dst = dstpb->pdata + dsty * dstpb->width + dstx;
     do {
@@ -77,7 +85,7 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int n
     createbmp(&SCREEN);
     loadbmp(&mybmp, lpszCmdLine);
     putbmp (&SCREEN, (SCREEN.width  - mybmp.width ) / 2, (SCREEN.height - mybmp.height) / 2, &mybmp);
-    UPDATE_SCREEN(&SCREEN, 0, 0, 640, 480);
+    UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0);
 
     FFRPG_MSG_LOOP();
     destroybmp(&mybmp );
