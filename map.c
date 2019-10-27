@@ -149,7 +149,7 @@ LRESULT CALLBACK MyWndProc(
         case VK_RIGHT: g_map_x+=1; break;
         }
         drawmap(&SCREEN, 0, 0, &g_my_map, g_map_x, g_map_y, SCREEN.width, SCREEN.height);
-        UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0);
+        UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0, TRUE);
         return 0;
     }
     return DEF_SCREEN_WNDPROC(hwnd, uMsg, wParam, lParam);
@@ -161,7 +161,7 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int n
     createbmp(&SCREEN);
     loadmap(&g_my_map, "home");
     drawmap(&SCREEN, 0, 0, &g_my_map, g_map_x, g_map_y, SCREEN.width, SCREEN.height);
-    UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0);
+    UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0, TRUE);
 
     FFRPG_MSG_LOOP();
     freemap(&g_my_map);

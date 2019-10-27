@@ -9,7 +9,7 @@ void FFRPG_WIN_INIT(HINSTANCE hInst, WNDPROC wndproc); /* 初始化 */
 void FFRPG_MSG_LOOP(void); /* 消息循环 */
 HINSTANCE GET_APP_INSTANCE(void); /* 获取 FFRPG APP 的实例句柄 */
 HWND      GET_SCREEN_HWND (void); /* 获取 SCREEN 的窗口句柄 */
-void UPDATE_SCREEN(BMP *pb, int x, int y, int h, int w);
+void UPDATE_SCREEN(BMP *pb, int x, int y, int h, int w, BOOL flag);
 
 /* WINSCREEN 默认的窗口消息处理函数 */
 LRESULT CALLBACK DEF_SCREEN_WNDPROC(

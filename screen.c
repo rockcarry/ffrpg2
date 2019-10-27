@@ -31,7 +31,7 @@ static void _windrv_destroybmp(void *pb);
 static BMP_EXTRA_WIN WINSCREEN_EXTRA =
 {
     NULL,
-    WS_SYSMENU,
+    WS_SYSMENU|WS_MINIMIZEBOX,
     DEF_SCREEN_WNDPROC,
 };
 
@@ -144,11 +144,18 @@ HWND GET_SCREEN_HWND(void)
     return pextra->hwnd;
 }
 
-void UPDATE_SCREEN(BMP *pb, int x, int y, int w, int h)
+void UPDATE_SCREEN(BMP *pb, int x, int y, int w, int h, BOOL flag)
 {
     BMP_EXTRA_WIN *pextra = (BMP_EXTRA_WIN*)pb->pextra;
-    RECT rect = { x, y, x + w, y + h };
-    InvalidateRect(pextra->hwnd, x || y || h || w ? &rect : NULL, FALSE);
+    RECT rect = { x, y, w ? x + w : pb->width, h ? y + h : pb->height };
+    if (flag) {
+        HDC hdc = GetDC(pextra->hwnd);
+        BitBlt(hdc, rect.left, rect.top, rect.right - rect.left, rect.bottom - rect.top,
+               pextra->hdc, rect.left, rect.top, SRCCOPY);
+        ReleaseDC(pextra->hwnd, hdc);
+    } else {
+        InvalidateRect(pextra->hwnd, x || y || h || w ? &rect : NULL, FALSE);
+    }
 }
 
 LRESULT CALLBACK DEF_SCREEN_WNDPROC(
@@ -200,7 +207,7 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int n
             if (j == 0 || j == 639 || i == 0 || i == 479) *(SCREEN.pdata + i * SCREEN.width + j) = RGB(0, 255, 0);
         }
     }
-    UPDATE_SCREEN(&SCREEN, 0, 0, 640, 480);
+    UPDATE_SCREEN(&SCREEN, 0, 0, 640, 480, FALSE);
 
     FFRPG_MSG_LOOP();
     destroybmp(&SCREEN);

@@ -111,7 +111,7 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int n
     createbmp(&SCREEN);
     loadbmp(&mybmp, lpszCmdLine);
     putbmp (&SCREEN, (SCREEN.width  - mybmp.width ) / 2, (SCREEN.height - mybmp.height) / 2, &mybmp);
-    UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0);
+    UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0, FALSE);
 
     FFRPG_MSG_LOOP();
     destroybmp(&mybmp );
