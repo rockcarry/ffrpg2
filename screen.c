@@ -36,7 +36,7 @@ static BMP_EXTRA_WIN WINSCREEN_EXTRA =
 };
 
 BMP SCREEN = {
-    0, 0, NULL, &WINSCREEN_EXTRA,
+    0, 0, NULL, &WINSCREEN_EXTRA, {0},
     _windrv_createbmp,
     _windrv_destroybmp,
 };
