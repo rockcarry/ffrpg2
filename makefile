@@ -5,7 +5,7 @@
 CC      = gcc
 AR      = ar
 STRIP   = strip
-CCFLAGS = -mwindows -Wall
+CCFLAGS = -mwindows -Wall -Os
 
 # 所有的目标文件
 OBJS = \
