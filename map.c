@@ -128,11 +128,14 @@ void drawmap(BMP *pb, int dstx, int dsty, MAP *pm, int srcx, int srcy, int w, in
 #else
 /* 包含头文件 */
 #include "screen.h"
+#include "font.h"
 #include "map.h"
 
 static MAP g_my_map = {0};
 static int g_map_x  =  0;
 static int g_map_y  =  0;
+static int g_keys   =  0;
+static int g_exit   =  0;
 LRESULT CALLBACK MyWndProc(
     HWND hwnd,      /* handle to window */
     UINT uMsg,      /* message identifier */
@@ -143,29 +146,79 @@ LRESULT CALLBACK MyWndProc(
     switch (uMsg) {
     case WM_KEYDOWN:
         switch (wParam) {
-        case VK_UP   : g_map_y-=1; break;
-        case VK_DOWN : g_map_y+=1; break;
-        case VK_LEFT : g_map_x-=1; break;
-        case VK_RIGHT: g_map_x+=1; break;
+        case VK_UP   : g_keys |= (1 << 0); break;
+        case VK_DOWN : g_keys |= (1 << 1); break;
+        case VK_LEFT : g_keys |= (1 << 2); break;
+        case VK_RIGHT: g_keys |= (1 << 3); break;
         }
-        drawmap(&SCREEN, 0, 0, &g_my_map, g_map_x, g_map_y, SCREEN.width, SCREEN.height);
-        UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0, TRUE);
+        return 0;
+    case WM_KEYUP:
+        switch (wParam) {
+        case VK_UP   : g_keys &=~(1 << 0); break;
+        case VK_DOWN : g_keys &=~(1 << 1); break;
+        case VK_LEFT : g_keys &=~(1 << 2); break;
+        case VK_RIGHT: g_keys &=~(1 << 3); break;
+        }
+        return 0;
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        g_exit = 1;
         return 0;
     }
     return DEF_SCREEN_WNDPROC(hwnd, uMsg, wParam, lParam);
 }
 
+DWORD WINAPI GameLoopThreadProc(LPVOID lpParam)
+{
+    DWORD tick_cur      = GetTickCount();
+    DWORD tick_60fps    = tick_cur;
+    DWORD tick_2s       = tick_cur;
+    int   tick_sleep    = 0;
+    int   frame_counter = 0;
+    int   frame_rate    = 60;
+    char  text[256];
+
+    while (!g_exit) {
+        if (g_keys & (1 << 0)) g_map_y-=1;
+        if (g_keys & (1 << 1)) g_map_y+=1;
+        if (g_keys & (1 << 2)) g_map_x-=1;
+        if (g_keys & (1 << 3)) g_map_x+=1;
+        drawmap(&SCREEN, 0, 0, &g_my_map, g_map_x, g_map_y, SCREEN.width, SCREEN.height);
+        snprintf(text, sizeof(text), "帧率: %d fps", frame_rate);
+        outtextxy(&SCREEN, 10, 10, RGB(0, 255, 0), &FONT16, text);
+        UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0, TRUE);
+        tick_cur = GetTickCount();
+        frame_counter++;
+        if (tick_cur - tick_2s > 2000) {
+            tick_2s += 2000;
+            frame_rate = frame_counter / 2;
+            frame_counter = 0;
+        }
+        tick_60fps += 16;
+        tick_sleep  = tick_60fps - tick_cur;
+        if (tick_sleep > 0) Sleep(tick_sleep);
+    }
+    return 0;
+}
+
 int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int nCmdShow)
 {
+    HANDLE hThread = NULL;
+
     FFRPG_WIN_INIT(hInst, MyWndProc);
+    loadfont (&FONT16);
     createbmp(&SCREEN);
     loadmap(&g_my_map, "home");
     drawmap(&SCREEN, 0, 0, &g_my_map, g_map_x, g_map_y, SCREEN.width, SCREEN.height);
     UPDATE_SCREEN(&SCREEN, 0, 0, 0, 0, TRUE);
 
+    hThread = CreateThread(NULL, 0, GameLoopThreadProc, NULL, 0, NULL);
     FFRPG_MSG_LOOP();
+    WaitForSingleObject(hThread, -1);
+
     freemap(&g_my_map);
     destroybmp(&SCREEN);
+    freefont(&FONT16);
     return 0;
 }
 #endif
