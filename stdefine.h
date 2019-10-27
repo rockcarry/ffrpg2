@@ -4,6 +4,12 @@
 
 #if defined(WIN32) || defined(__MINGW32__)
 #include <windows.h>
+
+#if !defined(__MINGW32__)
+#pragma warning(disable:4996)
+#define snprintf _snprintf_c
+#endif
+
 #else
 
 /* 常量定义 */
