@@ -12,13 +12,15 @@ OBJS = \
     log.o \
     bmp.o \
     screen.o \
-    bitblt.o
+    bitblt.o \
+    map.o
 
 # 所有的可执行目标
 EXES = \
     bmp.exe \
     screen.exe \
-    bitblt.exe
+    bitblt.exe \
+    map.exe
 
 # 输出的库文件
 LIB = ffrpg.a
