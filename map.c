@@ -171,7 +171,7 @@ LRESULT CALLBACK MyWndProc(
 DWORD WINAPI GameLoopThreadProc(LPVOID lpParam)
 {
     DWORD tick_cur      = GetTickCount();
-    DWORD tick_60fps    = tick_cur;
+    DWORD tick_fps      = tick_cur;
     DWORD tick_2s       = tick_cur;
     int   tick_sleep    = 0;
     int   frame_counter = 0;
@@ -194,8 +194,8 @@ DWORD WINAPI GameLoopThreadProc(LPVOID lpParam)
             frame_rate = frame_counter / 2;
             frame_counter = 0;
         }
-        tick_60fps += 16;
-        tick_sleep  = tick_60fps - tick_cur;
+        tick_fps  += 16;
+        tick_sleep = tick_fps - tick_cur;
         if (tick_sleep > 0) Sleep(tick_sleep);
     }
     return 0;
