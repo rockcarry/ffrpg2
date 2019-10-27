@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include "stdefine.h"
 #include "log.h"
 
 static FILE *s_log_fp = NULL;
