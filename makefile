@@ -12,14 +12,14 @@ OBJS = \
     log.o \
     bmp.o \
     screen.o \
-    bitblt.o \
+    draw2d.o \
     map.o
 
 # 所有的可执行目标
 EXES = \
     bmp.exe \
     screen.exe \
-    bitblt.exe \
+    draw2d.exe \
     map.exe
 
 # 输出的库文件

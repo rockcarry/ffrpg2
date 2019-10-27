@@ -4,7 +4,7 @@
 #include <string.h>
 #include "log.h"
 #include "map.h"
-#include "bitblt.h"
+#include "draw2d.h"
 
 static char* parse_params(const char *str, const char *key, char *val, int len)
 {

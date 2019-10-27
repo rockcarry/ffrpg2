@@ -1,5 +1,5 @@
-#ifndef __BITBLT_H__
-#define __BITBLT_H__
+#ifndef __DRAW2D_H__
+#define __DRAW2D_H__
 
 /* 包含头文件 */
 #include "bmp.h"

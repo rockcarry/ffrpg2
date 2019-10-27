@@ -1,7 +1,7 @@
 #ifndef _TEST_
 
 /* 包含头文件 */
-#include "bitblt.h"
+#include "draw2d.h"
 
 /* 内部函数实现 */
 /* 位块传送的区域裁剪函数 */
@@ -98,7 +98,7 @@ void bar(BMP *pb, int x, int y, int w, int h, int color)
 #else
 /* 包含头文件 */
 #include "screen.h"
-#include "bitblt.h"
+#include "draw2d.h"
 int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int nCmdShow)
 {
     BMP mybmp = {0};
