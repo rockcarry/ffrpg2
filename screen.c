@@ -194,9 +194,12 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int n
     FFRPG_WIN_INIT(hInst);
     createbmp(&SCREEN);
 
-    for (i=0; i<SCREEN.height; i++)
-        for (j=0; j<SCREEN.width; j++)
+    for (i=0; i<SCREEN.height; i++) {
+        for (j=0; j<SCREEN.width; j++) {
             *(SCREEN.pdata + i * SCREEN.width + j) = RGB(i, j, i);
+            if (j == 0 || j == 639 || i == 0 || i == 479) *(SCREEN.pdata + i * SCREEN.width + j) = RGB(0, 255, 0);
+        }
+    }
     UPDATE_SCREEN(&SCREEN, 0, 0, 640, 480);
 
     FFRPG_MSG_LOOP();
