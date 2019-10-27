@@ -81,7 +81,7 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int n
         lpszCmdLine = "res/boy.bmp";
     }
 
-    FFRPG_WIN_INIT(hInst);
+    FFRPG_WIN_INIT(hInst, NULL);
     createbmp(&SCREEN);
     loadbmp(&mybmp, lpszCmdLine);
     putbmp (&SCREEN, (SCREEN.width  - mybmp.width ) / 2, (SCREEN.height - mybmp.height) / 2, &mybmp);

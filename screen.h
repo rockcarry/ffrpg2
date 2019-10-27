@@ -5,7 +5,7 @@
 #include "bmp.h"
 
 /* 函数声明 */
-void FFRPG_WIN_INIT(HINSTANCE hInst); /* 初始化 */
+void FFRPG_WIN_INIT(HINSTANCE hInst, WNDPROC wndproc); /* 初始化 */
 void FFRPG_MSG_LOOP(void); /* 消息循环 */
 HINSTANCE GET_APP_INSTANCE(void); /* 获取 FFRPG APP 的实例句柄 */
 HWND      GET_SCREEN_HWND (void); /* 获取 SCREEN 的窗口句柄 */

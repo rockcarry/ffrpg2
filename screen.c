@@ -7,26 +7,6 @@
 /* 全局变量 */
 static HINSTANCE FFRPG_APP_INSTANCE = NULL;
 
-/* 函数实现 */
-void FFRPG_WIN_INIT(HINSTANCE hInst)
-{
-    FFRPG_APP_INSTANCE = hInst;
-}
-
-HINSTANCE GET_APP_INSTANCE(void)
-{
-    return FFRPG_APP_INSTANCE;
-}
-
-void FFRPG_MSG_LOOP(void)
-{
-    MSG msg = {0};
-    while (GetMessage(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage (&msg);
-    }
-}
-
 /*
   GDISCREEN 实现
  */
@@ -138,6 +118,26 @@ static void _windrv_destroybmp(void *pb)
 }
 
 /* 函数实现 */
+void FFRPG_WIN_INIT(HINSTANCE hInst, WNDPROC wndproc)
+{
+    FFRPG_APP_INSTANCE      = hInst;
+    WINSCREEN_EXTRA.wndproc = wndproc ? wndproc : DEF_SCREEN_WNDPROC;
+}
+
+HINSTANCE GET_APP_INSTANCE(void)
+{
+    return FFRPG_APP_INSTANCE;
+}
+
+void FFRPG_MSG_LOOP(void)
+{
+    MSG msg = {0};
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage (&msg);
+    }
+}
+
 HWND GET_SCREEN_HWND(void)
 {
     BMP_EXTRA_WIN *pextra = (BMP_EXTRA_WIN*)SCREEN.pextra;
@@ -191,7 +191,7 @@ int PASCAL WinMain(HINSTANCE hInst, HINSTANCE hPreInst, LPSTR lpszCmdLine, int n
 {
     int  i, j;
 
-    FFRPG_WIN_INIT(hInst);
+    FFRPG_WIN_INIT(hInst, NULL);
     createbmp(&SCREEN);
 
     for (i=0; i<SCREEN.height; i++) {
