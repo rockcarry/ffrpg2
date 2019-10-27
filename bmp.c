@@ -19,6 +19,10 @@ BOOL createbmp(BMP *pb)
     if (!pb) return FALSE;
     if (pb->width  == 0) pb->width  = DEF_BMP_WIDTH;
     if (pb->height == 0) pb->height = DEF_BMP_HEIGHT;
+    pb->clipper.left  = 0;
+    pb->clipper.top   = 0;
+    pb->clipper.right = pb->width - 1;
+    pb->clipper.bottom= pb->height- 1;
     if (pb->createbmp) {
         return pb->createbmp(pb);
     } else {
@@ -213,6 +217,16 @@ BOOL savebmp(BMP *pb, char *file)
     /* ¹Ø±ÕÎÄ¼þ */
     if (fp) fclose(fp);
     return TRUE;
+}
+
+void setclipper(BMP *pb, int left, int top, int right, int bottom)
+{
+    if (pb) {
+        pb->clipper.left  = left;
+        pb->clipper.top   = top;
+        pb->clipper.right = right;
+        pb->clipper.bottom= bottom;
+    }
 }
 
 #else

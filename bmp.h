@@ -11,7 +11,7 @@ typedef struct {
     int    height;     /* 高度 */
     DWORD *pdata;      /* 数据 */
     void  *pextra;
-
+    RECT   clipper;
     BOOL (*createbmp )(void *pb);
     void (*destroybmp)(void *pb);
 } BMP;
@@ -23,6 +23,7 @@ void destroybmp(BMP *pb);
 
 BOOL loadbmp(BMP *pb, char *file);
 BOOL savebmp(BMP *pb, char *file);
+void setclipper(BMP *pb, int left, int top, int right, int bottom);
 
 #endif
 
