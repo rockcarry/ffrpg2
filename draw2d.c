@@ -95,6 +95,17 @@ void bar(BMP *pb, int x, int y, int w, int h, int color)
     }
 }
 
+void pixel(BMP *pb, int x, int y, int c)
+{
+    if (pb) {
+        if (  x >= pb->clipper.left && x <= pb->clipper.right
+           && y >= pb->clipper.top  && y <= pb->clipper.bottom)
+        {
+            pb->pdata[y * pb->width + x] = c;
+        }
+    }
+}
+
 #else
 /* 包含头文件 */
 #include "screen.h"
