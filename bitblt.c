@@ -46,9 +46,9 @@ static BOOL bltclip(BMP *dstpb, int *dstx, int *dsty,
         *dsty  = dst_clip_t;
     }
 
-    if (*w < 0 || *h < 0) return FALSE;
     if (*dstx + *w > dst_clip_r + 1) *w = dst_clip_r + 1 - *dstx;
     if (*dsty + *h > dst_clip_b + 1) *h = dst_clip_b + 1 - *dsty;
+    if (*w < 0 || *h < 0) return FALSE;
     return TRUE;
 }
 
@@ -74,6 +74,7 @@ void bar(BMP *pb, int x, int y, int w, int h, int color)
     int    i;
     if (w == -1) w = pb->width ;
     if (h == -1) h = pb->height;
+    if (x > pb->clipper.right || y > pb->clipper.bottom) return;
     if (x < pb->clipper.left) {
         w-= pb->clipper.left - x;
         x = pb->clipper.left;
@@ -82,9 +83,9 @@ void bar(BMP *pb, int x, int y, int w, int h, int color)
         h-= pb->clipper.top - y;
         y = pb->clipper.top;
     }
-    if (x > pb->clipper.right || y > pb->clipper.bottom) return;
     if (x + w > pb->clipper.right + 1) w = pb->clipper.right + 1 - x;
     if (y + h > pb->clipper.bottom+ 1) h = pb->clipper.bottom+ 1 - y;
+    if (w < 0 || h < 0) return;
     dst = pb->pdata + y * pb->width + x;
     while (h--) {
         for (i=0; i<w; i++) {
