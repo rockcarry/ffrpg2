@@ -36,64 +36,60 @@ void draw_hz(BMP *pb, int x, int y, int c, FONT *pf, char hz[2])
 {
     int ch0 = (BYTE)hz[0] - 0xA0;
     int ch1 = (BYTE)hz[1] - 0xA0;
-    long offset = pf->_hzk_buf_size * ((ch0 - 1L) * 94 + (ch1 - 1L));
-    fseek(pf->_hzk_fp, offset, SEEK_SET);
-    fread(pf->_font_buf, pf->_hzk_buf_size, 1, pf->_hzk_fp);
-    draw_raster_font(pb, x, y, c, pf->_font_buf, pf->hzk_width, pf->hzk_height);
+    int offset = pf->_hzk_buf_size * ((ch0 - 1L) * 94 + (ch1 - 1L));
+    draw_raster_font(pb, x, y, c, pf->hzk_data + offset, pf->hzk_width, pf->hzk_height);
 }
 
 /* 输出一个英文字符的函数 */
 void draw_asc(BMP *pb, int x, int y, int c, FONT *pf, char asc)
 {
-    long offset = (long)asc * pf->_asc_buf_size;
-    fseek(pf->_asc_fp, offset, SEEK_SET);
-    fread(pf->_font_buf, pf->_asc_buf_size, 1, pf->_asc_fp);
-    draw_raster_font(pb, x, y, c, pf->_font_buf, pf->asc_width, pf->asc_height);
+    int offset = asc * pf->_asc_buf_size;
+    draw_raster_font(pb, x, y, c, pf->asc_data + offset, pf->asc_width, pf->asc_height);
 }
 
 BOOL loadfont(FONT *pf)
 {
-    int bufsize;
+    FILE *fp;
+    int  len;
 
     if (!pf) return FALSE;
 
     /* 计算字体所需要的缓冲区大小 */
     pf->_hzk_buf_size = (pf->hzk_width + 7) / 8 * pf->hzk_height;
     pf->_asc_buf_size = (pf->asc_width + 7) / 8 * pf->asc_height;
-    bufsize = max(pf->_hzk_buf_size, pf->_asc_buf_size);
 
-    /* 打开中文字库文件 */
-    pf->_hzk_fp = fopen(pf->hzk_file, "rb");
-    if (!pf->_hzk_fp) return FALSE;
+    fp = fopen(pf->hzk_file, "rb");
+    if (fp) {
+        fseek(fp, 0, SEEK_END);
+        len = ftell(fp);
+        fseek(fp, 0, SEEK_SET);
+        pf->hzk_data = malloc(len);
+        fread(pf->hzk_data, len, 1, fp);
+        fclose(fp);
+    }
 
-    /* 打开英文字库文件 */
-    pf->_asc_fp = fopen(pf->asc_file, "rb");
-    if (!pf->_asc_fp) return FALSE;
-
-    /* 申请字体所需要的缓冲区 */
-    pf->_font_buf = (BYTE*)malloc(bufsize);
-    if (pf->_font_buf) return FALSE;
-
+    fp = fopen(pf->asc_file, "rb");
+    if (fp) {
+        fseek(fp, 0, SEEK_END);
+        len = ftell(fp);
+        fseek(fp, 0, SEEK_SET);
+        pf->asc_data = malloc(len);
+        fread(pf->asc_data, len, 1, fp);
+        fclose(fp);
+    }
     return TRUE;
 }
 
 void freefont(FONT *pf)
 {
     if (!pf) return;
-
-    if (pf->_hzk_fp) {
-        fclose(pf->_hzk_fp);
-        pf->_hzk_fp = NULL;
+    if (pf->hzk_data) {
+        free(pf->hzk_data);
+        pf->hzk_data = NULL;
     }
-
-    if (pf->_asc_fp) {
-        fclose(pf->_asc_fp);
-        pf->_asc_fp = NULL;
-    }
-
-    if (pf->_font_buf) {
-        free(pf->_font_buf);
-        pf->_font_buf = NULL;
+    if (pf->asc_data) {
+        free(pf->asc_data);
+        pf->asc_data = NULL;
     }
 }
 

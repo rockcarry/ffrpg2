@@ -13,11 +13,10 @@ typedef struct {
     BYTE  asc_height;    /* 点阵英文字的高度 */
     char *hzk_file;      /* 汉字库文件名 */
     char *asc_file;      /* 英文字库文件名 */
-    FILE *_asc_fp;       /* 英文字库的文件指针 */
-    FILE *_hzk_fp;       /* 汉字库的文件指针 */
-    BYTE *_font_buf;     /* 字体缓冲区 */
-    int   _hzk_buf_size; /* 汉字字模大小 */
-    int   _asc_buf_size; /* 英文字模大小 */
+    char *hzk_data;
+    char *asc_data;
+    int  _hzk_buf_size; /* 汉字字模大小 */
+    int  _asc_buf_size; /* 英文字模大小 */
 } FONT;
 
 /* 文本框类型定义 */
