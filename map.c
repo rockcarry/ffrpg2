@@ -5,32 +5,7 @@
 #include "log.h"
 #include "map.h"
 #include "draw2d.h"
-
-static char* parse_params(const char *str, const char *key, char *val, int len)
-{
-    char *p = (char*)strstr(str, key);
-    int   i;
-
-    if (!p) return NULL;
-    p += strlen(key);
-    if (*p == '\0') return NULL;
-
-    while (1) {
-        if (*p != ' ' && *p != '=' && *p != ':') break;
-        else p++;
-    }
-
-    for (i=0; i<len; i++) {
-        if (*p == '\\') {
-            p++;
-        } else if (*p == ';' || *p == '\n' || *p == '\0') {
-            break;
-        }
-        val[i] = *p++;
-    }
-    val[i] = val[len-1] = '\0';
-    return val;
-}
+#include "utils.h"
 
 BOOL loadmap(MAP *map, char *name)
 {

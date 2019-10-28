@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include "draw2d.h"
 #include "font.h"
+#include "utils.h"
 
 /* 预定义字体 */
 FONT FONT12 = { 12, 12,  6, 12, "font/hzk1212.dat", "font/asc0612.dat" };
@@ -49,34 +50,11 @@ void draw_asc(BMP *pb, int x, int y, int c, FONT *pf, char asc)
 
 BOOL loadfont(FONT *pf)
 {
-    FILE *fp;
-    int  len;
-
     if (!pf) return FALSE;
-
-    /* 计算字体所需要的缓冲区大小 */
     pf->_hzk_buf_size = (pf->hzk_width + 7) / 8 * pf->hzk_height;
     pf->_asc_buf_size = (pf->asc_width + 7) / 8 * pf->asc_height;
-
-    fp = fopen(pf->hzk_file, "rb");
-    if (fp) {
-        fseek(fp, 0, SEEK_END);
-        len = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
-        pf->hzk_data = malloc(len);
-        fread(pf->hzk_data, len, 1, fp);
-        fclose(fp);
-    }
-
-    fp = fopen(pf->asc_file, "rb");
-    if (fp) {
-        fseek(fp, 0, SEEK_END);
-        len = ftell(fp);
-        fseek(fp, 0, SEEK_SET);
-        pf->asc_data = malloc(len);
-        fread(pf->asc_data, len, 1, fp);
-        fclose(fp);
-    }
+    pf->hzk_data = (BYTE*)read_file(pf->hzk_file, NULL);
+    pf->asc_data = (BYTE*)read_file(pf->asc_file, NULL);
     return TRUE;
 }
 

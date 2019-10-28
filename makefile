@@ -11,6 +11,7 @@ CCFLAGS = -mwindows -Wall -Os
 OBJS = \
     log.o \
     bmp.o \
+    utils.o \
     screen.o \
     draw2d.o \
     font.o \
