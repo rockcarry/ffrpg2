@@ -113,8 +113,8 @@ void drawmap(BMP *pb, int dstx, int dsty, MAP *pm, int srcx, int srcy, int w, in
     toffx= srcx % pm->tilew ? -(srcx % pm->tilew) : 0;
     toffy= srcy % pm->tileh ? -(srcy % pm->tileh) : 0;
 
-    if (toffx > 0) bar(pb, dstx, dsty, dstx + toffx, dsty + h, 0);
-    if (toffy > 0) bar(pb, dstx, dsty, dstx + w, dsty + toffy, 0);
+    if (toffx > 0) bar(pb, dstx, dsty, toffx, h, 0);
+    if (toffy > 0) bar(pb, dstx, dsty, w, toffy, 0);
     for (i=0; i<rows; i++) {
         for (j=0; j<cols; j++) {
             r = srcy / pm->tileh + i;
